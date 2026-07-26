@@ -5,8 +5,8 @@ class CourseCreate(BaseModel):
     title: str
     description: str
     category: str
-    thumbnail_url: str
-    banner_url: str
+    thumbnail_url: str = ""
+    banner_url: str = ""
     duration: str
     difficulty: str
     rating: float
