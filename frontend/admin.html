@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - SkillCraft</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="index.html" class="logo">Skill<span>Craft</span></a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="navLinks">
+        <a href="admin.html" class="active" style="color:var(--primary);font-weight:700;">&#128736; Admin Panel</a>
+        <div id="userMenu">
+          <div class="nav-user">
+            <span class="user-name" id="userName"></span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <section class="admin-page">
+    <div class="container">
+      <div class="admin-header">
+        <div>
+          <h1>Admin Panel</h1>
+          <p style="color:var(--gray-500);">Welcome, <span id="adminUserName">Admin</span></p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="showAddCourseForm()">+ Add Course</button>
+          <button class="btn btn-primary" onclick="showAddApkForm()" style="background:var(--success);">+ Add APK</button>
+        </div>
+      </div>
+
+      <div class="stats-grid" id="adminStats"></div>
+
+      <div class="dashboard-tabs">
+        <button class="dashboard-tab active" onclick="switchAdminTab('orders', this)">Orders</button>
+        <button class="dashboard-tab" onclick="switchAdminTab('courses', this)">Courses</button>
+        <button class="dashboard-tab" onclick="switchAdminTab('users', this)">Users</button>
+        <button class="dashboard-tab" onclick="switchAdminTab('apks', this)">APKs</button>
+        <button class="dashboard-tab" onclick="switchAdminTab('categories', this)">Categories</button>
+        <button class="dashboard-tab" onclick="switchAdminTab('settings', this)">Settings</button>
+      </div>
+
+      <div id="adminOrdersSection">
+        <div style="overflow-x:auto;">
+          <table class="admin-table" id="ordersTable">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Course</th>
+                <th>Amount</th>
+                <th>TID</th>
+                <th>Screenshot</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="ordersBody"></tbody>
+          </table>
+        </div>
+        <div id="noOrders" class="dashboard-empty" style="display:none;">
+          <div class="empty-icon">&#128230;</div>
+          <h3>No orders yet</h3>
+          <p>Orders will appear here when users make purchases.</p>
+        </div>
+      </div>
+
+      <div id="adminCoursesSection" style="display:none;">
+        <div style="overflow-x:auto;">
+          <table class="admin-table" id="coursesTable">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Difficulty</th>
+                <th>Price</th>
+                <th>Featured</th>
+                <th>Best Seller</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="coursesBody"></tbody>
+          </table>
+        </div>
+        <div id="noAdminCourses" class="dashboard-empty" style="display:none;">
+          <div class="empty-icon">&#128218;</div>
+          <h3>No courses yet</h3>
+          <p>Add your first course to get started.</p>
+        </div>
+      </div>
+
+      <div id="adminUsersSection" style="display:none;">
+        <div style="overflow-x:auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="usersBody"></tbody>
+          </table>
+        </div>
+        <div id="noUsers" class="dashboard-empty" style="display:none;">
+          <div class="empty-icon">&#128101;</div>
+          <h3>No users found</h3>
+        </div>
+      </div>
+
+      <div id="adminCategoriesSection" style="display:none;">
+        <div style="max-width:600px;margin:0 auto;">
+          <div style="display:flex;gap:12px;margin-bottom:24px;">
+            <input type="text" id="newCategoryInput" class="form-control" placeholder="Enter category name..." style="flex:1;">
+            <button class="btn btn-primary" onclick="handleAddCategory()" style="white-space:nowrap;">+ Add</button>
+          </div>
+          <div id="categoriesList"></div>
+        </div>
+      </div>
+
+      <div id="adminApksSection" style="display:none;">
+        <div style="overflow-x:auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Icon</th>
+                <th>Title</th>
+                <th>Price</th>
+                <th>Featured</th>
+                <th>Downloads</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="apksBody"></tbody>
+          </table>
+        </div>
+        <div id="noAdminApks" class="dashboard-empty" style="display:none;">
+          <div class="empty-icon">&#128230;</div>
+          <h3>No APKs yet</h3>
+          <p>Add your first cracked APK to get started.</p>
+        </div>
+      </div>
+
+      <div id="adminApkPurchasesSection" style="display:none;">
+        <div style="overflow-x:auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>APK</th>
+                <th>Amount</th>
+                <th>TID</th>
+                <th>Screenshot</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="apkPurchasesBody"></tbody>
+          </table>
+        </div>
+        <div id="noApkPurchases" class="dashboard-empty" style="display:none;">
+          <div class="empty-icon">&#128230;</div>
+          <h3>No APK purchases yet</h3>
+        </div>
+      </div>
+
+      <div id="adminSettingsSection" style="display:none;">
+        <div style="max-width:500px;margin:0 auto;">
+          <div class="auth-box" style="box-shadow:none;border:1px solid var(--gray-200);max-width:100%;">
+            <h2 style="font-size:22px;">Change Password</h2>
+            <p class="subtitle" style="margin-bottom:24px;">Update your admin account password</p>
+            <form id="changePasswordForm" onsubmit="handleChangePassword(event)">
+              <div class="form-group">
+                <label>Current Password</label>
+                <div class="password-wrapper">
+                  <input type="password" class="form-control" id="currentPassword" required>
+                  <button type="button" class="password-toggle" onclick="toggleEye('currentPassword', this)" tabindex="-1">&#128065;</button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>New Password</label>
+                <div class="password-wrapper">
+                  <input type="password" class="form-control" id="newPassword" required minlength="6">
+                  <button type="button" class="password-toggle" onclick="toggleEye('newPassword', this)" tabindex="-1">&#128065;</button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Confirm New Password</label>
+                <div class="password-wrapper">
+                  <input type="password" class="form-control" id="confirmNewPassword" required minlength="6">
+                  <button type="button" class="password-toggle" onclick="toggleEye('confirmNewPassword', this)" tabindex="-1">&#128065;</button>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Update Password</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="modal-overlay" id="courseModal" style="display:none;" onclick="if(event.target===this)closeCourseModal()">
+    <div class="modal" style="position:relative;max-width:700px;">
+      <button class="modal-close" onclick="closeCourseModal()" style="position:absolute;top:16px;right:16px;background:none;font-size:24px;border:none;cursor:pointer;color:var(--gray-400);">&times;</button>
+      <h2 id="courseModalTitle">Add Course</h2>
+      <div class="modal-body">
+        <form id="courseForm" onsubmit="handleCourseSubmit(event)">
+          <input type="hidden" id="editCourseId">
+          <div class="form-group">
+            <label>Course Title</label>
+            <input type="text" class="form-control" id="courseTitle" required>
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <textarea class="form-control" id="courseDescription" required></textarea>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div class="form-group">
+              <label>Category</label>
+              <select class="form-control" id="courseCategory" required>
+                <option value="">Select Category</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Difficulty</label>
+              <select class="form-control" id="courseDifficulty" required>
+                <option value="">Select Level</option>
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div class="form-group">
+              <label>Duration (e.g. 20 Hours)</label>
+              <input type="text" class="form-control" id="courseDuration" required>
+            </div>
+            <div class="form-group">
+              <label>Rating (0-5)</label>
+              <input type="number" class="form-control" id="courseRating" min="0" max="5" step="0.1" required>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div class="form-group">
+              <label>Original Price</label>
+              <input type="number" class="form-control" id="courseOriginalPrice" min="0" required>
+            </div>
+            <div class="form-group">
+              <label>Sale Price</label>
+              <input type="number" class="form-control" id="courseSalePrice" min="0" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Google Drive Folder Link</label>
+            <input type="url" class="form-control" id="courseDriveLink" required placeholder="https://drive.google.com/drive/folders/...">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div class="form-group">
+              <label>Thumbnail Image</label>
+              <input type="file" class="form-control" id="courseThumbnail" accept="image/*">
+              <small style="color:var(--gray-400);">Leave empty to keep existing (edit mode)</small>
+            </div>
+            <div class="form-group">
+              <label>Banner Image</label>
+              <input type="file" class="form-control" id="courseBanner" accept="image/*">
+              <small style="color:var(--gray-400);">Leave empty to keep existing (edit mode)</small>
+            </div>
+          </div>
+          <div style="display:flex;gap:24px;margin-bottom:20px;">
+            <div class="form-check">
+              <input type="checkbox" id="courseFeatured">
+              <label for="courseFeatured">Featured Course</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="courseBestSeller">
+              <label for="courseBestSeller">Best Seller</label>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block" id="courseSubmitBtn">Add Course</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="apkModal" style="display:none;" onclick="if(event.target===this)closeApkModal()">
+    <div class="modal" style="position:relative;max-width:550px;">
+      <button class="modal-close" onclick="closeApkModal()" style="position:absolute;top:16px;right:16px;background:none;font-size:24px;border:none;cursor:pointer;color:var(--gray-400);">&times;</button>
+      <h2 id="apkModalTitle">Add Cracked APK</h2>
+      <div class="modal-body">
+        <form id="apkForm" onsubmit="handleApkSubmit(event)">
+          <input type="hidden" id="editApkId">
+          <div class="form-group">
+            <label>APK Title</label>
+            <input type="text" class="form-control" id="apkTitle" required>
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <textarea class="form-control" id="apkDescription" required></textarea>
+          </div>
+          <div class="form-group">
+            <label>Icon Image</label>
+            <input type="file" class="form-control" id="apkIcon" accept="image/*">
+            <small style="color:var(--gray-400);">Upload the APK icon (leave empty to keep existing in edit mode)</small>
+          </div>
+          <div class="form-group">
+            <label>Google Drive Link (APK file)</label>
+            <input type="url" class="form-control" id="apkUrl" required placeholder="https://drive.google.com/...">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div class="form-group">
+              <label>Price (Rs.)</label>
+              <input type="number" class="form-control" id="apkPrice" min="0" required value="0">
+            </div>
+            <div class="form-check" style="display:flex;align-items:center;gap:8px;padding-top:24px;">
+              <input type="checkbox" id="apkFeatured">
+              <label for="apkFeatured">Featured</label>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block" id="apkSubmitBtn">Add APK</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <a href="https://wa.me/923097823422?text=Hi%20SkillCraft!%20I%20need%20help%20with" target="_blank" rel="noopener noreferrer" class="whatsapp-float" aria-label="Chat on WhatsApp">
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    <span class="tooltip">Chat on WhatsApp</span>
+  </a>
+  <div class="toast-container" id="toastContainer"></div>
+  <div class="loading-overlay" id="loadingOverlay" style="display:none;"><div class="spinner"></div></div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
