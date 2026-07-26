@@ -1,6 +1,6 @@
 const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
   ? 'http://localhost:8000/api'
-  : 'https://YOUR-RENDER-URL.onrender.com/api'; // ⚠️ Replace with your Render URL after deployment
+  : 'https://skillcraft-api.onrender.com/api';
 
 function showLoading() {
   const el = document.getElementById('loadingOverlay');
