@@ -123,7 +123,7 @@ function renderCourseCard(course) {
         <p class="description">${course.description || ''}</p>
         <div class="meta">
           <span class="difficulty ${diffClass}">${course.difficulty || 'Beginner'}</span>
-          <span class="meta-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> ${course.duration || 'N/A'}</span>
+          <span class="meta-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg> ${course.duration || 'N/A'}</span>
           <span class="rating">${stars} <span>${rating.toFixed(1)}</span></span>
         </div>
       </div>
@@ -287,7 +287,7 @@ async function loadCourseDetail(courseId) {
           <h1>${course.title}</h1>
           <div class="meta">
             <span class="difficulty ${diffClass}">${course.difficulty || 'Beginner'}</span>
-            <span>&#128197; ${course.duration || 'N/A'}</span>
+            <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px;"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg> ${course.duration || 'N/A'}</span>
             <span>&#9733; ${course.rating || '0'} Rating</span>
             <span>${course.category || ''}</span>
           </div>

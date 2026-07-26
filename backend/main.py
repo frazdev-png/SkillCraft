@@ -6,7 +6,7 @@ from routes.orders import router as orders_router
 from routes.upload import router as upload_router
 from routes.apks import router as apks_router
 from contextlib import asynccontextmanager
-from database import users_collection
+from database import users_collection, categories_collection
 from config import ADMIN_EMAIL, ADMIN_PASSWORD
 import bcrypt as _bcrypt
 
@@ -24,6 +24,12 @@ async def lifespan(app: FastAPI):
         print(f"Admin created: {ADMIN_EMAIL}")
     else:
         print(f"Admin already exists: {ADMIN_EMAIL}")
+
+    if categories_collection.count_documents({}) == 0:
+        defaults = ["Web Development", "Mobile Apps", "Data Science", "Python", "JavaScript", "Design", "AI & ML", "DevOps", "Cybersecurity", "Game Development", "Blockchain", "Cloud Computing"]
+        for cat in defaults:
+            categories_collection.insert_one({"name": cat})
+        print(f"Default categories seeded: {len(defaults)}")
     yield
 
 app = FastAPI(title="SkillCraft API", version="1.0.0", lifespan=lifespan)
