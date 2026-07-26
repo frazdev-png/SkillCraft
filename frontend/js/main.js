@@ -276,10 +276,7 @@ async function loadCourseDetail(courseId) {
     const course = await apiGet(`/courses/${courseId}`);
     const diffClass = `difficulty-${course.difficulty?.toLowerCase() || 'beginner'}`;
     container.innerHTML = `
-      <div class="detail-banner">
-        <img src="${course.banner_url || course.thumbnail_url || 'https://via.placeholder.com/1000x320/7c3aed/ffffff?text=Course'}" alt="${course.title}" onerror="this.src='https://via.placeholder.com/1000x320/7c3aed/ffffff?text=Course'">
-      </div>
-      <div class="detail-header">
+      <div class="detail-header" style="margin-top:20px;">
         <div class="detail-thumb">
           <img src="${course.thumbnail_url || 'https://via.placeholder.com/180x120/7c3aed/ffffff?text=Course'}" alt="${course.title}" onerror="this.src='https://via.placeholder.com/180x120/7c3aed/ffffff?text=Course'">
         </div>
