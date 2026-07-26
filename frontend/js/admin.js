@@ -599,7 +599,10 @@ async function loadAdminCategories() {
           ${cats.map(c => `
             <tr>
               <td>${c}</td>
-              <td><button class="btn-delete" onclick="deleteCategory('${c.replace(/'/g, "\\'")}')">Delete</button></td>
+              <td>
+                <button class="btn-edit" onclick="editCategoryPrompt('${c.replace(/'/g, "\\'")}')">Edit</button>
+                <button class="btn-delete" onclick="deleteCategory('${c.replace(/'/g, "\\'")}')">Delete</button>
+              </td>
             </tr>
           `).join('')}
         </tbody>
@@ -619,6 +622,21 @@ async function handleAddCategory() {
     await apiPost('/courses/categories', { name });
     showToast(`Category '${name}' added!`, 'success');
     input.value = '';
+    loadAdminCategories();
+  } catch (e) {
+    showToast(e.message, 'error');
+  } finally {
+    hideLoading();
+  }
+}
+
+async function editCategoryPrompt(oldName) {
+  const newName = prompt(`Rename "${oldName}" to:`, oldName);
+  if (!newName || newName.trim() === oldName) return;
+  showLoading();
+  try {
+    await apiPut(`/courses/categories/${encodeURIComponent(oldName)}`, { name: newName.trim() });
+    showToast(`Category renamed to '${newName.trim()}'`, 'success');
     loadAdminCategories();
   } catch (e) {
     showToast(e.message, 'error');

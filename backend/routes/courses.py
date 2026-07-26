@@ -86,6 +86,23 @@ def add_category(data: dict, request: Request):
     categories_collection.insert_one({"name": name})
     return {"message": f"Category '{name}' added"}
 
+@router.put("/categories/{name}")
+def update_category(name: str, data: dict, request: Request):
+    get_admin_user(request)
+    new_name = data.get("name", "").strip()
+    if not new_name:
+        raise HTTPException(status_code=400, detail="New name is required")
+    existing = categories_collection.find_one({"name": new_name})
+    if existing:
+        raise HTTPException(status_code=400, detail="Category already exists")
+    result = categories_collection.update_one(
+        {"name": name},
+        {"$set": {"name": new_name}}
+    )
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Category not found")
+    return {"message": f"Category renamed to '{new_name}'"}
+
 @router.delete("/categories/{name}")
 def delete_category(name: str, request: Request):
     get_admin_user(request)
