@@ -345,6 +345,19 @@ input, textarea, select { font-family: inherit; outline: none; }
   position: relative; height: 180px; overflow: hidden;
 }
 .course-card .thumbnail img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
+.drive-preview {
+  width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #f0f4ff, #e8f5e9, #fff8e1); gap: 8px; padding: 16px;
+}
+.drive-preview .drive-title { font-size: 13px; font-weight: 700; color: var(--gray-600); text-align: center; line-height: 1.3; }
+.drive-embed-section { margin-top: 32px; }
+.drive-embed-section h2 { font-size: 22px; font-weight: 900; margin-bottom: 16px; }
+.drive-embed-section h2 span { background: linear-gradient(135deg, var(--primary), var(--primary-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.drive-embed-wrap {
+  background: rgba(255,255,255,.5); backdrop-filter: blur(8px); border-radius: var(--radius-lg);
+  overflow: hidden; border: 1px solid rgba(255,255,255,.4); padding: 4px;
+}
+.drive-embed-wrap iframe { border-radius: var(--radius); background: #fff; }
 .course-card:hover .thumbnail img { transform: scale(1.1); }
 .course-card .thumbnail::after {
   content: ''; position: absolute; inset: 0;

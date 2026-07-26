@@ -266,19 +266,9 @@ function closeCourseModal() {
 async function handleCourseSubmit(e) {
   e.preventDefault();
   const editId = document.getElementById('editCourseId').value;
-  const imageFile = document.getElementById('courseThumbnail').files[0];
 
   showLoading();
   try {
-    let imageUrl = '';
-
-    if (imageFile) {
-      const fd = new FormData();
-      fd.append('file', imageFile);
-      const uploadResult = await apiUpload('/upload/image', fd);
-      imageUrl = uploadResult.url;
-    }
-
     const courseData = {
       title: document.getElementById('courseTitle').value,
       description: document.getElementById('courseDescription').value,
@@ -291,8 +281,8 @@ async function handleCourseSubmit(e) {
       google_drive_link: document.getElementById('courseDriveLink').value,
       featured: document.getElementById('courseFeatured').checked,
       best_seller: document.getElementById('courseBestSeller').checked,
-      thumbnail_url: imageUrl,
-      banner_url: imageUrl
+      thumbnail_url: '',
+      banner_url: ''
     };
 
     if (editId) {
@@ -303,7 +293,6 @@ async function handleCourseSubmit(e) {
       await apiPut(`/courses/${editId}`, updateData);
       showToast('Course updated successfully!', 'success');
     } else {
-      if (!imageUrl) throw new Error('Please upload a course picture');
       await apiPost('/courses/', courseData);
       showToast('Course added successfully!', 'success');
     }

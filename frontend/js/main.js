@@ -97,6 +97,15 @@ function searchCourses() {
   }
 }
 
+function getDriveEmbedUrl(link) {
+  if (!link) return null;
+  const m = link.match(/\/folders\/([^/?]+)/);
+  if (m) return `https://drive.google.com/embeddedfolderview?id=${m[1]}`;
+  const m2 = link.match(/[?&]id=([^&]+)/);
+  if (m2) return `https://drive.google.com/embeddedfolderview?id=${m2[1]}`;
+  return null;
+}
+
 function renderCourseCard(course) {
   const diffClass = `difficulty-${course.difficulty?.toLowerCase() || 'beginner'}`;
   const rating = course.rating || 0;
@@ -111,7 +120,10 @@ function renderCourseCard(course) {
   return `
     <div class="course-card">
       <div class="thumbnail">
-        <img src="${course.thumbnail_url || 'https://via.placeholder.com/400x250/7c3aed/ffffff?text=Course'}" alt="${course.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x250/7c3aed/ffffff?text=Course'">
+        <div class="drive-preview">
+          <svg width="40" height="40" viewBox="0 0 48 48"><path fill="#0F9D58" d="M18.08 3.18L6.12 23.22l6.48 11.19L24.72 3.18z"/><path fill="#FFC107" d="M24.72 3.18l-12.12 31.23h12.12L36.72 3.18z"/><path fill="#4285F4" d="M36.72 3.18L24.72 34.41l12.12 3.12 11.04-19.11z"/><path fill="#FFC107" d="M24.72 34.41L12.6 37.53l5.88 10.22c.98 1.7 3.35 1.7 4.34 0l3.9-6.76z"/></svg>
+          <div class="drive-title">${course.title}</div>
+        </div>
         <div class="badges">
           ${course.featured ? '<span class="badge badge-featured">Featured</span>' : ''}
           ${course.best_seller ? '<span class="badge badge-best-seller">Best Seller</span>' : ''}
@@ -275,15 +287,10 @@ async function loadCourseDetail(courseId) {
   try {
     const course = await apiGet(`/courses/${courseId}`);
     const diffClass = `difficulty-${course.difficulty?.toLowerCase() || 'beginner'}`;
+    const embedUrl = getDriveEmbedUrl(course.google_drive_link);
     container.innerHTML = `
-      <div class="detail-banner">
-        <img src="${course.banner_url || course.thumbnail_url || 'https://via.placeholder.com/1000x320/7c3aed/ffffff?text=Course'}" alt="${course.title}" onerror="this.src='https://via.placeholder.com/1000x320/7c3aed/ffffff?text=Course'">
-      </div>
       <div class="detail-header">
-        <div class="detail-thumb">
-          <img src="${course.thumbnail_url || 'https://via.placeholder.com/180x120/7c3aed/ffffff?text=Course'}" alt="${course.title}" onerror="this.src='https://via.placeholder.com/180x120/7c3aed/ffffff?text=Course'">
-        </div>
-        <div class="detail-info">
+        <div class="detail-info" style="flex:1;">
           <h1>${course.title}</h1>
           <div class="meta">
             <span class="difficulty ${diffClass}">${course.difficulty || 'Beginner'}</span>
@@ -302,6 +309,14 @@ async function loadCourseDetail(courseId) {
         <h2>About This Course</h2>
         <p>${course.description || 'No description available.'}</p>
       </div>
+      ${embedUrl ? `
+      <div class="drive-embed-section">
+        <h2>Course <span>Preview</span></h2>
+        <div class="drive-embed-wrap">
+          <iframe src="${embedUrl}" width="100%" height="480" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <p style="color:var(--gray-400);font-size:13px;margin-top:8px;">&#128279; Can't see the preview? <a href="${course.google_drive_link}" target="_blank" rel="noopener noreferrer" style="color:var(--primary);">Open in Google Drive</a></p>
+      </div>` : ''}
     `;
 
     try {
